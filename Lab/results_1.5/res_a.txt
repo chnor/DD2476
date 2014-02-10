@@ -1,0 +1,19 @@
+
+statistik skilsmässa
+ 1. svwiki\files\4000\3271.txt
+ 2. svwiki\files\7000\6336.txt
+ 3. svwiki\files\9000\8172.txt
+
+statistik skilsmässor
+ 1. svwiki\files\6000\5871.txt
+
+skilsmässor
+ 1. svwiki\files\1000\47.txt
+ 2. svwiki\files\1000\837.txt
+ 3. svwiki\files\5000\4989.txt
+ 4. svwiki\files\6000\5871.txt
+ 5. svwiki\files\10000\9604.txt
+
+antal skilsmässor
+ 1. svwiki\files\1000\837.txt
+ 2. svwiki\files\5000\4989.txt
