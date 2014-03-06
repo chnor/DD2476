@@ -1,21 +1,21 @@
 
-antikens underverk
- 1. svwiki\files\4000\3338.txt (2)
+antikens underverk (100%)
+ 1. svwiki\files\4000\3338.txt (1) [innehåller mausoleet i Halikarnassos]
  2. svwiki\files\8000\7020.txt (3)
- 3. svwiki\files\8000\7143.txt (1)
+ 3. svwiki\files\8000\7143.txt (1) [British Museum]
 
-olympiska spel och fred
+olympiska spel och fred (100%)
  1. svwiki\files\5000\4842.txt (1) [München]
  2. svwiki\files\7000\6072.txt (1) [året 1998]
  3. svwiki\files\7000\6073.txt (1) [1997]
  4. svwiki\files\8000\7443.txt (1) [Haag]
  5. svwiki\files\8000\7659.txt (1) [1996]
- 6. svwiki\files\8000\7788.txt
+ 6. svwiki\files\8000\7788.txt (1)
  7. svwiki\files\9000\8503.txt (1) [1972]
  8. svwiki\files\10000\9336.txt (1) [Tennis]
  9. svwiki\files\10000\9545.txt (1) [1952]
 
-europacupen
+europacupen (100%)
  1. svwiki\files\1000\250.txt (1)
  2. svwiki\files\1000\576.txt (1)
  3. svwiki\files\1000\863.txt (1)
@@ -33,17 +33,17 @@ europacupen
  15. svwiki\files\9000\8177.txt (1)
  16. svwiki\files\9000\8467.txt (1)
 
-konflikten i palestina
- 1. svwiki\files\1000\195.txt (0)
- 2. svwiki\files\2000\1306.txt (0)
- 3. svwiki\files\2000\1872.txt (0)
- 4. svwiki\files\3000\2296.txt (1)
- 5. svwiki\files\3000\2735.txt (1)
- 6. svwiki\files\4000\3926.txt (0)
- 7. svwiki\files\7000\6496.txt (1)
- 8. svwiki\files\8000\7065.txt (1)
- 9. svwiki\files\8000\7133.txt (1)
- 10. svwiki\files\9000\8133.txt (0)
+konflikten i palestina (0.53%)
+ 1. svwiki\files\1000\195.txt (0) [Bysans]
+ 2. svwiki\files\2000\1306.txt (0) [Medeltiden]
+ 3. svwiki\files\2000\1872.txt (0) [Ground zero]
+ 4. svwiki\files\3000\2296.txt (1) [Gaza]
+ 5. svwiki\files\3000\2735.txt (1) [Raderade sidor]
+ 6. svwiki\files\4000\3926.txt (0) [Irak]
+ 7. svwiki\files\7000\6496.txt (1) [Anna Lindh]
+ 8. svwiki\files\8000\7065.txt (1) [George W Bush]
+ 9. svwiki\files\8000\7133.txt (1) [Folke Bernadotte]
+ 10. svwiki\files\9000\8133.txt (0) [September 11]
  11. svwiki\files\10000\9143.txt (1) [Sionism]
  12. svwiki\files\10000\9479.txt (0) [Truman]
  13. svwiki\files\10000\9493.txt (1) [Clinton]
@@ -52,7 +52,7 @@ konflikten i palestina
  16. svwiki\files\10000\9548.txt (0) [1929]
  17. svwiki\files\10000\9895.txt (2) [Regionen Palestina]
 
-snowboard (!)
+snowboard (!) (100%)
  1. svwiki\files\2000\1553.txt (1) [Riksidrottsgymnasium]
  2. svwiki\files\2000\1610.txt (1) [Sollentuna]
  3. svwiki\files\3000\2436.txt (1) [Leksand]
@@ -63,16 +63,16 @@ snowboard (!)
  8. svwiki\files\8000\7788.txt (1) [90-talet]
  9. svwiki\files\9000\8179.txt (1) [1991]
 
-den europeiska bilindustrin
+den europeiska bilindustrin (33.3%)
  1. svwiki\files\6000\5717.txt (0) [Portugal]
  2. svwiki\files\7000\6679.txt (1) [Slovakien]
  3. svwiki\files\8000\7472.txt (0) [Peking]
 
-enhetlig europeisk valuta
+enhetlig europeisk valuta (50%)
  1. svwiki\files\4000\3955.txt (0) [Kanada]
  2. svwiki\files\6000\5385.txt (2) [EU]
 
-sex i reklam
+sex i reklam (0%)
  1. svwiki\files\1000\454.txt (0) [Europa, sex som tal]
  2. svwiki\files\1000\499.txt (0) [Eiffeltornet, sex som tal]
  3. svwiki\files\1000\956.txt (0) [Köpenhamn, sex som tal]
@@ -97,13 +97,13 @@ sex i reklam
  22. svwiki\files\10000\9511.txt (0) [1966, sex som tal, Sex and the City]
  23. svwiki\files\10000\9891.txt (0) [1956, Sex Pistols]
 
-lutande tornet i pisa
+lutande tornet i pisa (100%)
  1. svwiki\files\2000\1050.txt (1) [Kraft (fysik)]
  2. svwiki\files\3000\2735.txt (1) [Raderade sidor]
  3. svwiki\files\9000\8371.txt (1) [1990]
  4. svwiki\files\9000\8991.txt (1) [CN Tower, Toronto]
 
-genteknik
+genteknik (100%)
  1. svwiki\files\2000\1643.txt (1) [Helmuth Ellgaard]
  2. svwiki\files\2000\1932.txt (1) [Lysenko]
  3. svwiki\files\6000\5181.txt (1) [Virus]

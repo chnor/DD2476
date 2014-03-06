@@ -57,7 +57,8 @@ public class Indexer {
      *  Initializes the index as a HashedIndex.
      */
     public Indexer() {
-	index = new HashedIndex();
+		// index = new HashedIndex();
+		index = new FileIndex();
     }
 
 
@@ -69,6 +70,7 @@ public class Indexer {
      *  all its files and subdirectories are recursively processed.
      */
     public void processFiles( File f ) {
+	/*
 	// do not try to index fs that cannot be read
 	if ( f.canRead() ) {
 	    if ( f.isDirectory() ) {
@@ -119,6 +121,7 @@ public class Indexer {
 		}
 	    }
 	}
+	// */
     }
 
     

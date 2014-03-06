@@ -9,7 +9,7 @@
 
 package ir;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Iterator;
 
 public interface Index {
@@ -32,9 +32,10 @@ public interface Index {
     public static final int BIGRAM = 1; 
     public static final int SUBPHRASE = 2; 
 	
-    public HashMap<String, String> docIDs = new HashMap<String,String>();
-    public HashMap<String,Integer> docLengths = new HashMap<String,Integer>();
+    public TreeMap<String, String> docIDs = new TreeMap<String,String>();
+    public TreeMap<String,Integer> docLengths = new TreeMap<String,Integer>();
 
+    public String getDocName(String docID);
     public void insert( String token, int docID, int offset );
     public Iterator<String> getDictionary();
     public PostingsList getPostings( String token );

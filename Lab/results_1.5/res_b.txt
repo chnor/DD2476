@@ -1,26 +1,35 @@
 
 kaliningrad
- 1. svwiki\files\2000\1154.txt
- 2. svwiki\files\2000\1342.txt
- 3. svwiki\files\3000\2122.txt
- 4. svwiki\files\3000\2336.txt
- 5. svwiki\files\4000\3094.txt
- 6. svwiki\files\4000\3096.txt
- 7. svwiki\files\4000\3743.txt
- 8. svwiki\files\5000\4203.txt
- 9. svwiki\files\5000\4503.txt
- 10. svwiki\files\6000\5775.txt
- 11. svwiki\files\7000\6074.txt
- 12. svwiki\files\7000\6232.txt
- 13. svwiki\files\8000\7489.txt
- 14. svwiki\files\8000\7957.txt
- 15. svwiki\files\9000\8133.txt
- 16. svwiki\files\9000\8201.txt
+ 1. svwiki\files\2000\1154.txt (0)
+ 2. svwiki\files\2000\1342.txt (0)
+ 3. svwiki\files\3000\2122.txt (0)
+ 4. svwiki\files\3000\2336.txt (0)
+ 5. svwiki\files\4000\3094.txt (0)
+ 6. svwiki\files\4000\3096.txt (0)
+ 7. svwiki\files\4000\3743.txt (0)
+ 8. svwiki\files\5000\4203.txt (0)
+ 9. svwiki\files\5000\4503.txt (0)
+ 10. svwiki\files\6000\5775.txt (0)
+ 11. svwiki\files\7000\6074.txt (0)
+ 12. svwiki\files\7000\6232.txt (0)
+ 13. svwiki\files\8000\7489.txt (0)
+ 14. svwiki\files\8000\7957.txt (0)
+ 15. svwiki\files\9000\8133.txt (0)
+ 16. svwiki\files\9000\8201.txt (0)
 
 kaliningrad framtid
- 1. svwiki\files\4000\3094.txt
- 2. svwiki\files\7000\6232.txt
- 3. svwiki\files\9000\8201.txt
+ 1. svwiki\files\4000\3094.txt (0)
+ 2. svwiki\files\7000\6232.txt (0)
+ 3. svwiki\files\9000\8201.txt (0)
 
 kaliningrad situation
- 1. svwiki\files\7000\6232.txt
+ 1. svwiki\files\7000\6232.txt (0)
+
+exklaven
+ 1. svwiki\files\4000\3094.txt (0)
+ 2. svwiki\files\6000\5587.txt (0)
+ 3. svwiki\files\8000\7332.txt (0)
+ 4. svwiki\files\8000\7345.txt (0)
+
+rysslands ekonomi kaliningrad
+ 1. svwiki\files\4000\3094.txt

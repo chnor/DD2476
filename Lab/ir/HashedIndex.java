@@ -9,8 +9,15 @@
 
 package ir;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  *   Implements an inverted index as a Hashtable from words to PostingsLists.
@@ -18,7 +25,7 @@ import java.util.Iterator;
 public class HashedIndex implements Index {
 	
     /** The index as a hashtable. */
-    private HashMap<String,PostingsList> index = new HashMap<String,PostingsList>();
+    private TreeMap<String,PostingsList> index = new TreeMap<String,PostingsList>();
 	
     /**
      *  Inserts this token in the index.
@@ -32,6 +39,13 @@ public class HashedIndex implements Index {
 		index.get(token).add(docID, 0, offset);
     }
 	
+	/**
+     *  Lookup the document with specified ID.
+     */
+	public String getDocName(String docID) {
+		return docIDs.get(docID);
+	}
+	
     /**
      *  Returns all the words in the index.
      */
@@ -44,10 +58,21 @@ public class HashedIndex implements Index {
      *  if the term is not in the index.
      */
     public PostingsList getPostings( String token ) {
+		PostingsList result = null;
 		if (index.containsKey(token))
-			return index.get(token);
+			result = index.get(token);
 		else
-			return new PostingsList();
+			result = new PostingsList();
+		for (PostingsEntry entry : result) {
+			System.out.print(entry.docID + ": ");
+			Iterator<Integer> pos_iter = entry.getPositionIterator();
+			while (pos_iter.hasNext()) {
+				int pos = pos_iter.next();
+				System.out.print("" + pos + " ");
+			}
+			System.out.println();
+		}
+		return result;
     }
 	
 	/**
@@ -147,11 +172,11 @@ public class HashedIndex implements Index {
 						// else pos_2 = -1;
 						break;
 					} else if ( w1 > pos_2 ) {
-						if (pos_iter_1.hasNext()) pos_1 = pos_iter_1.next();
-						else pos_1 = -1;
-					} else if ( w2 < pos_2 ) {
 						if (pos_iter_2.hasNext()) pos_2 = pos_iter_2.next();
 						else pos_2 = -1;
+					} else if ( w2 < pos_2 ) {
+						if (pos_iter_1.hasNext()) pos_1 = pos_iter_1.next();
+						else pos_1 = -1;
 					}
 				}
 				
@@ -206,8 +231,88 @@ public class HashedIndex implements Index {
     }
 	
     /**
-     *  No need for cleanup in a HashedIndex.
+     *  Marshal the index to file.
+     */
+	public void marshal_dump() {
+		
+		// TreeMap<String, Integer> dict = new TreeMap<String, Integer>();
+		
+		// /*
+		BufferedWriter index_file = null;
+		RandomAccessFile doc_file = null;
+		RandomAccessFile pos_file = null;
+		try {
+			index_file = new BufferedWriter(new FileWriter("store/index", false));
+			doc_file = new RandomAccessFile(new File("store/docs"), "rw");
+			pos_file = new RandomAccessFile(new File("store/pos"),	"rw");
+			
+			// int offset = 0;
+			int iter = 0;
+			for (Map.Entry<String, PostingsList> entry : index.entrySet()) {
+				iter++;
+				if (iter % 1000 == 0) {
+					System.out.println("Marshalling posting for " + entry.getKey() + " to file");
+					System.out.println("" + (int)(1000.0*iter/index.size()) / 10.0 + "% done");
+				}
+				
+				index_file.write(entry.getKey() + " " + doc_file.getFilePointer() + "\n");
+				// offset += 1;
+				
+				entry.getValue().marshalDump(doc_file, pos_file);
+				
+				// dict.put(token, offset);
+			}
+			
+			// dict_out = new BufferedWriter(new FileWriter("store/dict", false));
+			// for (Map.Entry<String, int> entry : dict.entrySet()) {
+				// dict_out.write(entry.getKey() + ", " + entry.getValue());
+			// }
+			
+		} catch (IOException e) {
+			System.err.println(e);
+		} finally {
+			if(index_file != null){
+				try {
+					index_file.close();
+				} catch (IOException e) {
+					System.err.println(e);
+				}
+			}
+			if(doc_file != null){
+				try {
+					doc_file.close();
+				} catch (IOException e) {
+					System.err.println(e);
+				}
+			}
+		}
+		
+		BufferedWriter doc_info_file = null;
+		try {
+			doc_info_file = new BufferedWriter(new FileWriter("store/doc_info", false));
+			for (Map.Entry<String, String> entry : docIDs.entrySet()) {
+				doc_info_file.write(entry.getKey() + " " + entry.getValue());
+				doc_info_file.write("\n");
+			}
+		} catch (IOException e) {
+			System.err.println(e);
+		} finally {
+			if(doc_info_file != null){
+				try {
+					doc_info_file.close();
+				} catch (IOException e) {
+					System.err.println(e);
+				}
+			}
+		}
+		// */
+		
+	}
+	
+    /**
+     *  Clean up index (persist).
      */
     public void cleanup() {
+		marshal_dump();
     }
 }

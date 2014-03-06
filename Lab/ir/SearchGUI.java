@@ -174,7 +174,10 @@ public class SearchGUI extends JFrame {
 		    // we don't want to search at the same time we're indexing new files
 		    // (this might corrupt the index).
 		    synchronized ( indexLock ) {
-			results = indexer.index.search( query, queryType, rankingType, structureType ); 
+				long start_time = System.nanoTime();
+				results = indexer.index.search( query, queryType, rankingType, structureType ); 
+				long elapsed = System.nanoTime() - start_time;
+				System.out.println("Query took " + elapsed + " ns");
 		    }
 		    StringBuffer buf = new StringBuffer();
 		    if ( results != null ) {
@@ -185,7 +188,8 @@ public class SearchGUI extends JFrame {
 				i++;
 			    buf.append( " " + i + ". " );
 			    // String filename = indexer.index.docIDs.get( "" + results.get(i).docID );
-			    String filename = indexer.index.docIDs.get( "" + entry.docID );
+			    // String filename = indexer.index.docIDs.get( "" + entry.docID );
+			    String filename = indexer.index.getDocName( "" + entry.docID );
 			    if ( filename == null ) {
 				// buf.append( "" + results.get(i).docID );
 				buf.append( "" + entry.docID );

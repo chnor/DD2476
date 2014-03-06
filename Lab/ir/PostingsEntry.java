@@ -11,6 +11,7 @@ package ir;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.TreeSet;
 import java.io.Serializable;
 
 public class PostingsEntry implements Comparable<PostingsEntry>, Serializable {
@@ -24,7 +25,7 @@ public class PostingsEntry implements Comparable<PostingsEntry>, Serializable {
 	
     public int docID;
     public double score;
-	private LinkedList<Integer> positions = new LinkedList<Integer>();
+	private TreeSet<Integer> positions = new TreeSet<Integer>();
 	
     /**
      *  PostingsEntries are compared by their score (only relevant 
@@ -43,7 +44,7 @@ public class PostingsEntry implements Comparable<PostingsEntry>, Serializable {
 	}
 	
 	public void addPosition(int pos) {
-		positions.push(pos);
+		positions.add(pos);
 	}
 	
 	public Iterator<Integer> getPositionIterator() {

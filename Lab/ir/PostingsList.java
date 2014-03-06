@@ -12,6 +12,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeMap;
 import java.io.Serializable;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  *   A list of postings for a given word.
@@ -55,6 +58,27 @@ public class PostingsList implements Serializable, Iterable<PostingsEntry> {
 	// public PostingsEntry get(int docID) {
 		// return list.get(docID);
 	// }
+	
+	public void marshalDump(RandomAccessFile doc_file, RandomAccessFile pos_file)
+	throws IOException {
+		// int offset = 0;
+		for (PostingsEntry entry : this) {
+			long pos_pointer = pos_file.getFilePointer();
+			String dump = "" + entry.docID + ":" + pos_pointer + " ";
+			doc_file.writeBytes(dump);
+			Iterator<Integer> pos_iter = entry.getPositionIterator();
+			while (pos_iter.hasNext()) {
+				int pos = pos_iter.next();
+				pos_file.writeBytes("" + pos + " ");
+			}
+			pos_file.writeBytes("\n");
+			
+			// offset += dump.length();
+		}
+		doc_file.writeBytes("\n");
+		// offset += 1;
+		// return offset;
+	}
 	
     //
     //  YOUR CODE HERE
