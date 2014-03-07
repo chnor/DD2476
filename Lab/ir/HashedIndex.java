@@ -14,7 +14,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,7 +29,8 @@ import java.util.Map;
 public class HashedIndex implements Index {
 	
     /** The index as a hashtable. */
-    private TreeMap<String,PostingsList> index = new TreeMap<String,PostingsList>();
+    private TreeMap<String, PostingsList> index = new TreeMap<String,PostingsList>();
+	private TreeMap<String, Integer> wordCounts = new TreeMap<String, Integer>();
 	
     /**
      *  Inserts this token in the index.
@@ -37,6 +42,9 @@ public class HashedIndex implements Index {
 		}
 		// index.get(token).add(new PostingsEntry(docID, 0));
 		index.get(token).add(docID, 0, offset);
+		if (!wordCounts.containsKey("" + docID))
+			wordCounts.put("" + docID, 0);
+		wordCounts.put("" + docID, wordCounts.get("" + docID) + 1);
     }
 	
 	/**
@@ -200,7 +208,7 @@ public class HashedIndex implements Index {
     /**
      *  Searches the index for postings matching the query.
      */
-    public PostingsList search( Query query, int queryType, int rankingType, int structureType ) {
+    public Collection<PostingsEntry> search(Query query, int queryType, int rankingType, int structureType) {
 		// System.out.println("Searching for " + query.terms.peek() + " among " + index.size());
 		if (queryType == Index.INTERSECTION_QUERY) {
 			PostingsList results = null;
@@ -211,8 +219,8 @@ public class HashedIndex implements Index {
 					results = intersect(results, getPostings(term));
 				}
 			}
-			if (results == null) return new PostingsList();
-			return results;
+			if (results == null) return new ArrayList<PostingsEntry>();
+			return results.toCollection();
 		} else if (queryType == Index.PHRASE_QUERY) {
 			PostingsList results = null;
 			int offset = -1;
@@ -224,10 +232,24 @@ public class HashedIndex implements Index {
 					results = intersect(results, getPostings(term), offset, offset);
 				}
 			}
-			if (results == null) return new PostingsList();
-			return results;
+			if (results == null) return new ArrayList<PostingsEntry>();
+			return results.toCollection();
+		} else if (queryType == Index.RANKED_QUERY) {
+			PostingsList results = null;
+			for (String term : query.terms) {
+				if (results == null) {
+					results = getPostings(term);
+				} else {
+					results = intersect(results, getPostings(term));
+				}
+			}
+			if (results == null) return new ArrayList<PostingsEntry>();
+			List<PostingsEntry> sorted = new ArrayList<PostingsEntry>(results.toCollection());
+			Collections.sort(sorted, PostingsEntry.SCORE_COMPARATOR_ASCENDING);
+			return sorted;
 		}
-		return getPostings(query.terms.peek());
+		
+		return null;
     }
 	
     /**
@@ -236,6 +258,9 @@ public class HashedIndex implements Index {
 	public void marshal_dump() {
 		
 		// TreeMap<String, Integer> dict = new TreeMap<String, Integer>();
+		
+		File dir = new File("store");
+		dir.mkdir();
 		
 		// /*
 		BufferedWriter index_file = null;
@@ -291,7 +316,9 @@ public class HashedIndex implements Index {
 		try {
 			doc_info_file = new BufferedWriter(new FileWriter("store/doc_info", false));
 			for (Map.Entry<String, String> entry : docIDs.entrySet()) {
-				doc_info_file.write(entry.getKey() + " " + entry.getValue());
+				doc_info_file.write(entry.getKey());
+				doc_info_file.write(" " + entry.getValue());
+				doc_info_file.write(" " + wordCounts.get(entry.getKey()));
 				doc_info_file.write("\n");
 			}
 		} catch (IOException e) {

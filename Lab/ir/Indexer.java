@@ -17,6 +17,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.pdfparser.*;
@@ -57,8 +59,12 @@ public class Indexer {
      *  Initializes the index as a HashedIndex.
      */
     public Indexer() {
-		// index = new HashedIndex();
-		index = new FileIndex();
+		if (Files.exists(Paths.get("store"))) {
+			// Index on file
+			index = new FileIndex();
+		} else {
+			index = new HashedIndex();
+		}
     }
 
 
@@ -70,7 +76,11 @@ public class Indexer {
      *  all its files and subdirectories are recursively processed.
      */
     public void processFiles( File f ) {
-	/*
+	// /*
+	
+	// Index on file does not need to be indexed...
+	if (index instanceof FileIndex) return;
+	
 	// do not try to index fs that cannot be read
 	if ( f.canRead() ) {
 	    if ( f.isDirectory() ) {

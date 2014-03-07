@@ -1,1 +1,1 @@
-java -Xmx1024m ir.SearchGUI -d svwiki/files/1000 -d svwiki/files/2000 -d svwiki/files/3000 -d svwiki/files/4000 -d svwiki/files/5000 -d svwiki/files/6000 -d svwiki/files/7000 -d svwiki/files/8000 -d svwiki/files/9000
+java -Xmx1024m ir.SearchGUI -d svwiki/files/1000 -d svwiki/files/2000 -d svwiki/files/3000 -d svwiki/files/4000 -d svwiki/files/5000 -d svwiki/files/6000 -d svwiki/files/7000 -d svwiki/files/8000 -d svwiki/files/9000 -d svwiki/files/10000

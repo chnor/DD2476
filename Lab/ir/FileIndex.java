@@ -11,12 +11,58 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.HashMap;
 
 /**
  *   
  */
 public class FileIndex implements Index {
+	
+	private static class DocInfo {
+		public String filename;
+		public int wordCount;
+		public DocInfo(String filename, int wordCount) {
+			this.filename = filename;
+			this.wordCount = wordCount;
+		}
+	}
+	
+	private int totalNumberOfDocuments = -1;
+	private HashMap<String, DocInfo> docInfo = new HashMap<String, DocInfo>();
+	
+	public FileIndex() {
+		super();
+		
+		BufferedReader doc_info_reader = null;
+		
+		try {
+			doc_info_reader = new BufferedReader(new FileReader(new File("store/doc_info")));
+			String line;
+			int docCount = 0;
+			while ((line = doc_info_reader.readLine()) != null) {
+				docCount++;
+				String[] tokens = line.split("\\s+");
+				String docId = tokens[0];
+				String filename = tokens[1];
+				int wordCount = Integer.parseInt(tokens[2]);
+				docInfo.put(docId, new DocInfo(filename, wordCount));
+			}
+			totalNumberOfDocuments = docCount;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				doc_info_reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
     /**
      *  Inserts this token in the index.
@@ -32,6 +78,39 @@ public class FileIndex implements Index {
 		return null;
 		// return index.keySet().iterator();
     }
+	
+	/*
+	private int retrieveTotalNumberOfDocuments() {
+		
+		// Use a mutex!
+		synchronized(this) {
+			if (totalNumberOfDocuments == -1) {
+				// Not set. Look it up
+				BufferedReader doc_info_file = null;
+				System.out.println("Looking up number of documents...");
+				try {
+					doc_info_file = new BufferedReader(new FileReader(new File("store/doc_info")));
+					int count = 0;
+					String line;
+					while ((line = doc_info_file.readLine()) != null) {
+						count++;
+					}
+					System.out.println("Done!");
+					totalNumberOfDocuments = count;
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						doc_info_file.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			return totalNumberOfDocuments;
+		}
+	}
+	*/
 	
 	private String extractLine(String key, RandomAccessFile file)
 	throws IOException {
@@ -105,27 +184,20 @@ public class FileIndex implements Index {
      */
     public String getDocName( String docID ) {
 		
+		return docInfo.get(docID).filename;
+		
+		/*
 		RandomAccessFile doc_info_file = null;
 		
 		System.out.println("Looking up filename of " + docID);
 		
 		try {
-			// doc_info_reader = new BufferedReader(new FileReader(new File("store/doc_info")));
 			doc_info_file = new RandomAccessFile(new File("store/doc_info"), "r");
 			String line = extractLine(docID, doc_info_file);
-			// System.out.println(line);
 			String[] tokens = line.split("\\s+");
 			if (tokens.length > 1) {
 				return tokens[1];
 			}
-			
-			// String line;
-			// while ((line = doc_info_reader.readLine()) != null) {
-				// String[] tokens = line.split("\\s+");
-				// if (tokens.length > 1 && tokens[0].equals(docID)) {
-					// return tokens[1];
-				// }
-			// }
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -137,7 +209,40 @@ public class FileIndex implements Index {
 		}
 		
 		return null;
+		*/
+	}
+	
+    /**
+     *  
+     */
+    public int getDocWordCount( String docID ) {
 		
+		return docInfo.get(docID).wordCount;
+		
+		/*
+		RandomAccessFile doc_info_file = null;
+		
+		System.out.println("Looking up word count of document: " + docID);
+		
+		try {
+			doc_info_file = new RandomAccessFile(new File("store/doc_info"), "r");
+			String line = extractLine(docID, doc_info_file);
+			String[] tokens = line.split("\\s+");
+			if (tokens.length > 2) {
+				return Integer.parseInt(tokens[2]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				doc_info_file.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return -1;
+		*/
 	}
 	
     /**
@@ -193,7 +298,21 @@ public class FileIndex implements Index {
 						String[] pos_toks = poss_string.split("\\s+");
 						for (String pos_tok : pos_toks) {
 							int pos = Integer.parseInt(pos_tok);
-							result.add(docID, 0, pos);
+							
+							int tf_dt = pos_toks.length;
+							int N = totalNumberOfDocuments;
+							int df_t = doc_ID_strings.length;
+							int len_d = getDocWordCount(tok2[0]);
+							
+							double idf_t = Math.log(1.0*N/df_t);
+							double tf_idf_dt = 1.0 * tf_dt * idf_t / len_d;
+							// System.out.println("tf_dt: " + tf_dt);
+							// System.out.println("N: " + N);
+							// System.out.println("df_t: " + df_t);
+							// System.out.println("len_d: " + len_d);
+							// System.out.println("Score: " + tf_idf_dt);
+							
+							result.add(docID, tf_idf_dt, pos);
 						}
 					}
 				}
@@ -221,6 +340,33 @@ public class FileIndex implements Index {
 		
 		return result;
     }
+	
+	/**
+	 * Helper function.
+	 */
+	private PostingsList union(PostingsList P1, PostingsList P2) {
+		PostingsList res = new PostingsList();
+		
+		for (PostingsEntry entry : P1) {
+			if (P2.contains(entry)) {
+				// Intersection set of P1 and P2
+				double P2_score = P2.get(entry.docID).score;
+				res.add(entry.docID, entry.score + P2_score, 0);
+			} else {
+				// Set: P1 \ P2
+				res.add(entry.docID, entry.score, 0);
+			}
+		}
+		for (PostingsEntry entry : P2) {
+			if (!P1.contains(entry)) {
+				// Set: P2 \ P1
+				res.add(entry.docID, entry.score, 0);
+			}
+		}
+		
+		return res;
+		
+	}
 	
 	/**
 	 * Helper function.
@@ -347,7 +493,7 @@ public class FileIndex implements Index {
     /**
      *  Searches the index for postings matching the query.
      */
-    public PostingsList search( Query query, int queryType, int rankingType, int structureType ) {
+    public Collection<PostingsEntry> search(Query query, int queryType, int rankingType, int structureType) {
 		// System.out.println("Searching for " + query.terms.peek() + " among " + index.size());
 		if (queryType == Index.INTERSECTION_QUERY) {
 			PostingsList results = null;
@@ -358,8 +504,8 @@ public class FileIndex implements Index {
 					results = intersect(results, getPostings(term, true));
 				}
 			}
-			if (results == null) return new PostingsList();
-			return results;
+			if (results == null) return new ArrayList<PostingsEntry>();
+			return results.toCollection();
 		} else if (queryType == Index.PHRASE_QUERY) {
 			PostingsList results = null;
 			int offset = -1;
@@ -371,11 +517,24 @@ public class FileIndex implements Index {
 					results = intersect(results, getPostings(term, false), offset, offset);
 				}
 			}
-			if (results == null) return new PostingsList();
-			return results;
+			if (results == null) return new ArrayList<PostingsEntry>();
+			return results.toCollection();
+		} else if (queryType == Index.RANKED_QUERY) {
+			PostingsList results = null;
+			for (String term : query.terms) {
+				if (results == null) {
+					results = getPostings(term, false);
+				} else {
+					results = union(results, getPostings(term, false));
+				}
+			}
+			if (results == null) return new ArrayList<PostingsEntry>();
+			List<PostingsEntry> sorted = new ArrayList<PostingsEntry>(results.toCollection());
+			Collections.sort(sorted, PostingsEntry.SCORE_COMPARATOR_ASCENDING);
+			return sorted;
 		}
 		
-		return getPostings(query.terms.peek(), true);
+		return null;
     }
 	
     /**

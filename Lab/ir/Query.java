@@ -7,6 +7,7 @@
 
 package ir;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -52,7 +53,7 @@ public class Query {
     /**
      *  Expands the Query using Relevance Feedback
      */
-    public void relevanceFeedback( PostingsList results, boolean[] docIsRelevant, Indexer indexer ) {
+    public void relevanceFeedback( Collection<PostingsEntry> results, boolean[] docIsRelevant, Indexer indexer ) {
 	// results contain the ranked list from the current search
 	// docIsRelevant contains the users feedback on which of the 10 first hits are relevant
 	

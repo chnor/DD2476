@@ -22,6 +22,18 @@ public class PostingsEntry implements Comparable<PostingsEntry>, Serializable {
 				return p1.docID - p2.docID;
 			}
 		};
+	public static final Comparator<PostingsEntry> SCORE_COMPARATOR_ASCENDING =
+		new Comparator<PostingsEntry>() {
+			public int compare(PostingsEntry p1, PostingsEntry p2) {
+				if (p1.score > p2.score) {
+					return -1;
+				} else if (p1.score < p2.score) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		};
 	
     public int docID;
     public double score;

@@ -8,8 +8,9 @@
 
 package ir;
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeMap;
 import java.io.Serializable;
 import java.io.BufferedWriter;
@@ -36,6 +37,10 @@ public class PostingsList implements Serializable, Iterable<PostingsEntry> {
 		// return list.get( i );
     // }
 	
+	public Collection<PostingsEntry> toCollection() {
+		return list.values();
+	}
+	
 	public Iterator<PostingsEntry> iterator() {
 		return list.values().iterator();
 	}
@@ -44,24 +49,27 @@ public class PostingsList implements Serializable, Iterable<PostingsEntry> {
 		// this.list = new TreeMap<PostingsEntry>();
 	// }
 	
+	public boolean contains(PostingsEntry entry) {
+		return list.containsKey(entry.docID);
+	}
+	
 	public void add(PostingsEntry entry) {
 		assert(!list.containsKey(entry.docID));
 		list.put(entry.docID, entry);
 	}
 	
-	public void add(int docID, int score, int offset) {
+	public void add(int docID, double score, int offset) {
 		if (!list.containsKey(docID))
 			list.put(docID, new PostingsEntry(docID, score));
 		list.get(docID).addPosition(offset);
 	}
 	
-	// public PostingsEntry get(int docID) {
-		// return list.get(docID);
-	// }
+	public PostingsEntry get(int docID) {
+		return list.get(docID);
+	}
 	
 	public void marshalDump(RandomAccessFile doc_file, RandomAccessFile pos_file)
 	throws IOException {
-		// int offset = 0;
 		for (PostingsEntry entry : this) {
 			long pos_pointer = pos_file.getFilePointer();
 			String dump = "" + entry.docID + ":" + pos_pointer + " ";
@@ -72,12 +80,8 @@ public class PostingsList implements Serializable, Iterable<PostingsEntry> {
 				pos_file.writeBytes("" + pos + " ");
 			}
 			pos_file.writeBytes("\n");
-			
-			// offset += dump.length();
 		}
 		doc_file.writeBytes("\n");
-		// offset += 1;
-		// return offset;
 	}
 	
     //

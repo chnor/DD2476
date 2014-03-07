@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 import java.awt.*;
@@ -33,7 +34,7 @@ public class SearchGUI extends JFrame {
     private Query query; 
 	
     /**  The returned documents, used in search() and relevanceFeedbackSearch() */
-    private PostingsList results; 
+    private Collection<PostingsEntry> results; 
 	
     /**  Directories that should be indexed. */
     LinkedList<String> dirNames = new LinkedList<String>();
@@ -175,7 +176,7 @@ public class SearchGUI extends JFrame {
 		    // (this might corrupt the index).
 		    synchronized ( indexLock ) {
 				long start_time = System.nanoTime();
-				results = indexer.index.search( query, queryType, rankingType, structureType ); 
+				results = indexer.index.search(query, queryType, rankingType, structureType); 
 				long elapsed = System.nanoTime() - start_time;
 				System.out.println("Query took " + elapsed + " ns");
 		    }
