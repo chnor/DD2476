@@ -5,6 +5,8 @@
  *   First version:  Johan Boye, 2012
  */  
 
+package pagerank;
+
 import java.util.*;
 import java.io.*;
 
@@ -154,16 +156,140 @@ public class PageRank{
     /* --------------------------------------------- */
 
 
+	/**
+	 * Generate starting probabilities randomly.
+	 */
+	private double[] randomStart(int numberOfDocs) {
+		double[] pi = new double[numberOfDocs];
+		Random RNG = new Random(System.currentTimeMillis());
+		{
+			double total = 0;
+			for (int i = 0; i < numberOfDocs; i++) {
+				pi[i] = RNG.nextDouble();
+				total += pi[i];
+			}
+			for (int i = 0; i < numberOfDocs; i++) {
+				pi[i] /= total;
+			}
+		}
+		return pi;
+	}
+	private double[] powerIteration(double[] pi, int maxIter, double eps) {
+		
+		double[] pi_new = new double[pi.length];
+		System.arraycopy(pi, 0, pi_new, 0, pi.length);
+		
+		double pi_diff = 1.0;
+		
+		for (int iter = 0; iter < maxIter && pi_diff > eps; iter++) {
+			System.out.println("Iteration " + iter+1);
+			Arrays.fill(pi_new, 0);
+			for (int i = 0; i < pi.length; i++) {
+				for (int j = 0; j < pi.length; j++) {
+					double P_ij = BORED / pi.length;
+					if (link.get(i) != null && link.get(i).get(j) != null) {
+						P_ij += 1.0 / out[i];
+					}
+					// System.out.println("" + i + " -> " + j);
+					pi_new[j] += pi[i] * P_ij;
+				}
+			}
+			
+			pi_diff = 0.0;
+			for (int i = 0; i < pi.length; i++) {
+				pi_diff += Math.abs(pi[i] - pi_new[i]);
+			}
+			
+			System.arraycopy(pi_new, 0, pi, 0, pi.length);
+			
+			/*
+			double total = 0;
+			for (int i = 0; i < pi.length; i++) {
+				total += pi[i];
+			}
+			for (int i = 0; i < pi.length; i++) {
+				pi[i] /= total;
+			}
+			// */
+			
+		}
+		
+		return pi;
+	}
+	
+	private double[] approximation_1(double[] pi, int maxIter, double eps) {
+		
+		double[] pi_new = new double[pi.length];
+		System.arraycopy(pi, 0, pi_new, 0, pi.length);
+		
+		double pi_diff = 1.0;
+		
+		for (int iter = 0; iter < maxIter && pi_diff > eps; iter++) {
+			Arrays.fill(pi_new, 0);
+			for (int i = 0; i < pi.length; i++) {
+				if (out[i] > 0) {
+					for (Integer j : link.get(i).keySet()) {
+						double P_ij = (1-BORED) / out[i];
+						pi_new[j] += pi[i] * P_ij;
+					}
+				}
+				pi_new[i] += BORED / pi.length;
+				pi_new[i] += numberOfSinks / pi.length / pi.length;
+			}
+			
+			pi_diff = 0.0;
+			for (int i = 0; i < pi.length; i++) {
+				pi_diff += Math.abs(pi[i] - pi_new[i]);
+			}
+			
+			System.arraycopy(pi_new, 0, pi, 0, pi.length);
+			
+		}
+		
+		return pi;
+	}
+	
+	private void printHighest(double[] pi, int nToPrint) {
+		
+		ArrayList<Map.Entry<Integer, Double> > pi_res = new ArrayList<Map.Entry<Integer, Double> >();
+		for (int i = 0; i < pi.length; i++) {
+			pi_res.add(new AbstractMap.SimpleEntry<Integer, Double>(i, pi[i]));
+		}
+		Collections.sort(pi_res, new Comparator<Map.Entry<Integer, Double>>() {
+			public int compare(Map.Entry<Integer, Double> p1, Map.Entry<Integer, Double> p2) {
+				if (p1.getValue() > p2.getValue()) {
+					return -1;
+				} else if (p1.getValue() < p2.getValue()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		});
+		
+		int i = 0;
+		for (Map.Entry<Integer, Double> entry : pi_res) {
+			i++;
+			System.out.println("" + i + ":\t" + docName[entry.getKey()] + "\t" + Math.round(1E5*entry.getValue())/1E5);
+			if (i >= nToPrint) break;
+		}
+		
+	}
+	
     /*
      *   Computes the pagerank of each document.
      */
     void computePagerank( int numberOfDocs ) {
-	//
-	//   YOUR CODE HERE
-	//
+		
+		double[] pi = randomStart(numberOfDocs);
+		// pi = powerIteration(pi, 10, 1E-9);
+		pi = approximation_1(pi, 20, 1E-9);
+		
+		printHighest(pi, 50);
+		
     }
 
-
+	
     /* --------------------------------------------- */
 
 
