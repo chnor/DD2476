@@ -341,155 +341,6 @@ public class FileIndex implements Index {
 		return result;
     }
 	
-	/**
-	 * Helper function.
-	 */
-	private PostingsList union(PostingsList P1, PostingsList P2) {
-		PostingsList res = new PostingsList();
-		
-		for (PostingsEntry entry : P1) {
-			if (P2.contains(entry)) {
-				// Intersection set of P1 and P2
-				double P2_score = P2.get(entry.docID).score;
-				res.add(entry.docID, entry.score + P2_score, 0);
-			} else {
-				// Set: P1 \ P2
-				res.add(entry.docID, entry.score, 0);
-			}
-		}
-		for (PostingsEntry entry : P2) {
-			if (!P1.contains(entry)) {
-				// Set: P2 \ P1
-				res.add(entry.docID, entry.score, 0);
-			}
-		}
-		
-		return res;
-		
-	}
-	
-	/**
-	 * Helper function.
-	 */
-	private PostingsList intersect(PostingsList P1, PostingsList P2) {
-		PostingsList res = new PostingsList();
-		// System.out.println("Intersecting");
-		
-		/*
-		for (PostingsEntry entry : P1) {
-		}
-		// */
-		
-		// /* Textbook algorithm in O(n)
-		Iterator<PostingsEntry> iter_1 = P1.iterator();
-		Iterator<PostingsEntry> iter_2 = P2.iterator();
-		PostingsEntry p1 = null;
-		PostingsEntry p2 = null;
-		if (iter_1.hasNext()) p1 = iter_1.next();
-		if (iter_2.hasNext()) p2 = iter_2.next();
-		while (p1 != null && p2 != null) {
-			if (p1.docID == p2.docID) {
-				res.add(p1);
-				if (iter_1.hasNext()) p1 = iter_1.next();
-				else p1 = null;
-				if (iter_2.hasNext()) p2 = iter_2.next();
-				else p2 = null;
-			} else {
-				if (p1.docID < p2.docID) {
-					if (iter_1.hasNext()) p1 = iter_1.next();
-					else p1 = null;
-				} else {
-					if (iter_2.hasNext()) p2 = iter_2.next();
-					else p2 = null;
-				}
-			}
-		}
-		// */
-		/*
-		PostingsEntry p1 = iter_1.next();
-		PostingsEntry p2 = iter_2.next();
-		while (iter_1.hasNext() && iter_2.hasNext()) {
-			while (p1.docID < p2.docID) {
-				// System.out.println("Comparing: " + p1.docID + " < " + p2.docID);
-				if (!iter_1.hasNext()) return res;
-				p1 = iter_1.next();
-			}
-			while (p2.docID < p1.docID) {
-				// System.out.println("Comparing: " + p1.docID + " > " + p2.docID);
-				if (!iter_2.hasNext()) return res;
-				p2 = iter_2.next();
-			}
-			// System.out.println("Comparing: " + p1.docID + " == " + p2.docID);
-			assert(p1.docID == p2.docID);
-			res.add(p1);
-			p1 = iter_1.next();
-			p2 = iter_2.next();
-		}
-		// */
-		return res;
-	}
-	
-	/**
-	 * Helper function.
-	 */
-	private PostingsList intersect(PostingsList P1, PostingsList P2, int k1, int k2) {
-		PostingsList res = new PostingsList();
-		System.out.println("Intersecting in window [" + k1 + ", " + k2 + "]");
-		
-		Iterator<PostingsEntry> iter_1 = P1.iterator();
-		Iterator<PostingsEntry> iter_2 = P2.iterator();
-		PostingsEntry p1 = null;
-		PostingsEntry p2 = null;
-		if (iter_1.hasNext()) p1 = iter_1.next();
-		if (iter_2.hasNext()) p2 = iter_2.next();
-		while (p1 != null && p2 != null) {
-			if (p1.docID == p2.docID) {
-				
-				System.out.println("Checking document " + p1.docID);
-				
-				Iterator<Integer> pos_iter_1 = p1.getPositionIterator();
-				Iterator<Integer> pos_iter_2 = p2.getPositionIterator();
-				int pos_1 = -1;
-				int pos_2 = -1;
-				if (pos_iter_1.hasNext()) pos_1 = pos_iter_1.next();
-				if (pos_iter_2.hasNext()) pos_2 = pos_iter_2.next();
-				while (pos_1 != -1 && pos_2 != -1) {
-					int w1 = pos_1 + k1;
-					int w2 = pos_1 + k2;
-					System.out.println("Searching for " + pos_2 + " in window [" + w1 + ", " + w2 + "]");
-					if ( w1 <= pos_2 && pos_2 <= w2 ) {
-						res.add(p1);
-						// if (pos_iter_1.hasNext()) pos_1 = pos_iter_1.next();
-						// else pos_1 = -1;
-						// if (pos_iter_2.hasNext()) pos_2 = pos_iter_2.next();
-						// else pos_2 = -1;
-						break;
-					} else if ( w1 > pos_2 ) {
-						if (pos_iter_2.hasNext()) pos_2 = pos_iter_2.next();
-						else pos_2 = -1;
-					} else if ( w2 < pos_2 ) {
-						if (pos_iter_1.hasNext()) pos_1 = pos_iter_1.next();
-						else pos_1 = -1;
-					}
-				}
-				
-				if (iter_1.hasNext()) p1 = iter_1.next();
-				else p1 = null;
-				if (iter_2.hasNext()) p2 = iter_2.next();
-				else p2 = null;
-			} else {
-				if (p1.docID < p2.docID) {
-					if (iter_1.hasNext()) p1 = iter_1.next();
-					else p1 = null;
-				} else {
-					if (iter_2.hasNext()) p2 = iter_2.next();
-					else p2 = null;
-				}
-			}
-		}
-		return res;
-	}
-	
     /**
      *  Searches the index for postings matching the query.
      */
@@ -501,7 +352,7 @@ public class FileIndex implements Index {
 				if (results == null) {
 					results = getPostings(term, true);
 				} else {
-					results = intersect(results, getPostings(term, true));
+					results = results.intersect(getPostings(term, true));
 				}
 			}
 			if (results == null) return new ArrayList<PostingsEntry>();
@@ -514,7 +365,7 @@ public class FileIndex implements Index {
 				if (results == null) {
 					results = getPostings(term, false);
 				} else {
-					results = intersect(results, getPostings(term, false), offset, offset);
+					results = results.intersect(getPostings(term, false), offset, offset);
 				}
 			}
 			if (results == null) return new ArrayList<PostingsEntry>();
@@ -525,7 +376,7 @@ public class FileIndex implements Index {
 				if (results == null) {
 					results = getPostings(term, false);
 				} else {
-					results = union(results, getPostings(term, false));
+					results = results.union(getPostings(term, false));
 				}
 			}
 			if (results == null) return new ArrayList<PostingsEntry>();
