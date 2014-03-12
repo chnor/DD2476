@@ -174,6 +174,17 @@ public class PageRank{
 		}
 		return pi;
 	}
+	
+	private void normalize(double[] pi) {
+		double total = 0;
+		for (int i = 0; i < pi.length; i++) {
+			total += pi[i];
+		}
+		for (int i = 0; i < pi.length; i++) {
+			pi[i] /= total;
+		}
+	}
+	
 	private double[] powerIteration(double[] pi, int maxIter, double eps) {
 		
 		double[] pi_new = new double[pi.length];
@@ -249,6 +260,189 @@ public class PageRank{
 		return pi;
 	}
 	
+	private double[] monte_carlo_1(int numberOfDocs, int maxIter) {
+		
+		int[] counts = new int[numberOfDocs];
+		
+		Random RNG = new Random(System.currentTimeMillis());
+		
+		double next_target = 0.0;
+		for (int iter = 0; iter < maxIter; iter++) {
+			if (iter > next_target*maxIter) {
+				System.out.println("" + Math.round(100*next_target) + "% done");
+				next_target += 0.1;
+			}
+			int i = RNG.nextInt(numberOfDocs);
+			// System.out.println("Starting i:" + i);
+			while (RNG.nextDouble() > BORED) {
+				if (out[i] > 0) {
+					Integer[] outlinks = link.get(i).keySet().toArray(new Integer[0]);
+					int next_i = RNG.nextInt(outlinks.length);
+					// System.out.println("Next i:" + next_i);
+					i = outlinks[next_i];
+				} else {
+					i = RNG.nextInt(numberOfDocs);
+				}
+			}
+			counts[i]++;
+			
+		}
+		
+		double[] pi = new double[numberOfDocs];
+		for (int i = 0; i < pi.length; i++) {
+			pi[i] = 1.0 * counts[i] / maxIter;
+		}
+		normalize(pi);
+		return pi;
+	}
+	
+	private double[] monte_carlo_2(int numberOfDocs, int maxIter) {
+		
+		int[] counts = new int[numberOfDocs];
+		
+		Random RNG = new Random(System.currentTimeMillis());
+		
+		double next_target = 0.0;
+		for (int iter = 0; iter < maxIter; iter++) {
+			if (iter > next_target*maxIter) {
+				System.out.println("" + Math.round(100*next_target) + "% done");
+				next_target += 0.1;
+			}
+			for (int start_i = 0; start_i < numberOfDocs; start_i++) {
+				int i = start_i;
+				// System.out.println("Starting i:" + i);
+				while (RNG.nextDouble() > BORED) {
+					if (out[i] > 0) {
+						Integer[] outlinks = link.get(i).keySet().toArray(new Integer[0]);
+						int next_i = RNG.nextInt(outlinks.length);
+						// System.out.println("Next i:" + next_i);
+						i = outlinks[next_i];
+					} else {
+						i = RNG.nextInt(numberOfDocs);
+					}
+				}
+				counts[i]++;
+			}
+		}
+		
+		double[] pi = new double[numberOfDocs];
+		for (int i = 0; i < pi.length; i++) {
+			pi[i] = 1.0 * counts[i] / maxIter;
+		}
+		normalize(pi);
+		return pi;
+	}
+	
+	private double[] monte_carlo_3(int numberOfDocs, int maxIter) {
+		
+		int[] counts = new int[numberOfDocs];
+		
+		Random RNG = new Random(System.currentTimeMillis());
+		
+		double next_target = 0.0;
+		for (int iter = 0; iter < maxIter; iter++) {
+			if (iter > next_target*maxIter) {
+				System.out.println("" + Math.round(100*next_target) + "% done");
+				next_target += 0.1;
+			}
+			for (int start_i = 0; start_i < numberOfDocs; start_i++) {
+				int i = start_i;
+				// System.out.println("Starting i:" + i);
+				while (RNG.nextDouble() > BORED) {
+					if (out[i] > 0) {
+						Integer[] outlinks = link.get(i).keySet().toArray(new Integer[0]);
+						int next_i = RNG.nextInt(outlinks.length);
+						// System.out.println("Next i:" + next_i);
+						i = outlinks[next_i];
+					} else {
+						i = RNG.nextInt(numberOfDocs);
+					}
+					counts[i]++;
+				}
+			}
+		}
+		
+		double[] pi = new double[numberOfDocs];
+		for (int i = 0; i < pi.length; i++) {
+			pi[i] = 1.0 * counts[i] / maxIter;
+		}
+		normalize(pi);
+		return pi;
+	}
+	
+	private double[] monte_carlo_4(int numberOfDocs, int maxIter) {
+		
+		int[] counts = new int[numberOfDocs];
+		
+		Random RNG = new Random(System.currentTimeMillis());
+		
+		double next_target = 0.0;
+		for (int iter = 0; iter < maxIter; iter++) {
+			if (iter > next_target*maxIter) {
+				System.out.println("" + Math.round(100*next_target) + "% done");
+				next_target += 0.1;
+			}
+			for (int start_i = 0; start_i < numberOfDocs; start_i++) {
+				int i = start_i;
+				// System.out.println("Starting i:" + i);
+				while (RNG.nextDouble() > BORED) {
+					if (out[i] > 0) {
+						Integer[] outlinks = link.get(i).keySet().toArray(new Integer[0]);
+						int next_i = RNG.nextInt(outlinks.length);
+						// System.out.println("Next i:" + next_i);
+						i = outlinks[next_i];
+					} else {
+						break;
+					}
+					counts[i]++;
+				}
+			}
+		}
+		
+		double[] pi = new double[numberOfDocs];
+		for (int i = 0; i < pi.length; i++) {
+			pi[i] = 1.0 * counts[i] / maxIter;
+		}
+		normalize(pi);
+		return pi;
+	}
+	
+	private double[] monte_carlo_5(int numberOfDocs, int maxIter) {
+		
+		int[] counts = new int[numberOfDocs];
+		
+		Random RNG = new Random(System.currentTimeMillis());
+		
+		double next_target = 0.0;
+		for (int iter = 0; iter < maxIter; iter++) {
+			if (iter > next_target*maxIter) {
+				System.out.println("" + Math.round(100*next_target) + "% done");
+				next_target += 0.1;
+			}
+			int i = RNG.nextInt(numberOfDocs);
+			// System.out.println("Starting i:" + i);
+			while (RNG.nextDouble() > BORED) {
+				if (out[i] > 0) {
+					Integer[] outlinks = link.get(i).keySet().toArray(new Integer[0]);
+					int next_i = RNG.nextInt(outlinks.length);
+					// System.out.println("Next i:" + next_i);
+					i = outlinks[next_i];
+				} else {
+					break;
+				}
+				counts[i]++;
+			}
+			
+		}
+		
+		double[] pi = new double[numberOfDocs];
+		for (int i = 0; i < pi.length; i++) {
+			pi[i] = 1.0 * counts[i] / maxIter;
+		}
+		normalize(pi);
+		return pi;
+	}
+	
 	private void printHighest(double[] pi, int nToPrint) {
 		
 		ArrayList<Map.Entry<Integer, Double> > pi_res = new ArrayList<Map.Entry<Integer, Double> >();
@@ -281,9 +475,16 @@ public class PageRank{
      */
     void computePagerank( int numberOfDocs ) {
 		
-		double[] pi = randomStart(numberOfDocs);
-		// pi = powerIteration(pi, 10, 1E-9);
-		pi = approximation_1(pi, 20, 1E-9);
+		double[] pi = null;
+		// double[] pi = randomStart(numberOfDocs);
+		// pi = powerIteration(pi, 10, EPSILON);
+		// pi = approximation_1(pi, 20, EPSILON);
+		
+		// pi = monte_carlo_1(numberOfDocs, 100*10000);
+		// pi = monte_carlo_2(numberOfDocs, 100);
+		// pi = monte_carlo_3(numberOfDocs, 100);
+		// pi = monte_carlo_4(numberOfDocs, 100);
+		pi = monte_carlo_5(numberOfDocs, 100*10000);
 		
 		printHighest(pi, 50);
 		
